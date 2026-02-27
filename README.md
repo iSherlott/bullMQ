@@ -50,6 +50,8 @@ func main() {
 
 ## Variáveis de ambiente
 
+Em produção, configure **apenas variáveis de ambiente**. O arquivo `.env` é recomendado somente para desenvolvimento/teste local.
+
 ```env
 REDIS_HOST=<REDIS_NAME>.redis.cache.windows.net
 REDIS_PORT=6380
@@ -67,6 +69,8 @@ Compatibilidade mantida:
 - Se `REDIS_ADDR` estiver definido, ele também funciona.
 - Se `REDIS_HOST` já vier com porta (`host:port`), ele é respeitado.
 - Evite espaço após `=` no `.env` (ex.: use `REDIS_PASSWORD=valor`, não `REDIS_PASSWORD= valor`).
+
+Observação: `LoadConfigFromEnv(".env")` não falha se o arquivo não existir (útil em produção), mas falha se o arquivo existir e estiver inválido.
 
 Nos exemplos `only_publisher` e `only_consumer`, `BULLMQ_QUEUE_NAME`, `BULLMQ_RETRY_LIMIT` e `BULLMQ_DEAD_LETTER_QUEUE` são lidas automaticamente do `.env`.
 

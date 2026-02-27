@@ -12,7 +12,9 @@ type sampleMessage struct {
 }
 
 func ExampleUsage() {
-	config, err := LoadConfigFromEnv(".env")
+	// Production: set environment variables (REDIS_ADDR/REDIS_HOST, etc.).
+	// Local/test: you may keep a `.env` file; LoadConfigFromEnv will load it when present.
+	config, err := LoadConfigFromEnv()
 	if err != nil {
 		log.Fatal(err)
 	}

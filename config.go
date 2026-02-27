@@ -1,6 +1,7 @@
 package bullmq
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -61,8 +62,24 @@ func (config Config) normalize() Config {
 
 func LoadConfigFromEnv(envFiles ...string) (Config, error) {
 	if len(envFiles) > 0 {
-		if err := godotenv.Load(envFiles...); err != nil {
-			return Config{}, err
+		for _, envFile := range envFiles {
+			envFile = strings.TrimSpace(envFile)
+			if envFile == "" {
+				continue
+			}
+
+			if _, statErr := os.Stat(envFile); statErr != nil {
+				if errors.Is(statErr, os.ErrNotExist) {
+					// In production, `.env` is usually not present. Treat it as optional.
+					continue
+				}
+				return Config{}, statErr
+			}
+
+			// If the file exists but is invalid, fail fast.
+			if err := godotenv.Load(envFile); err != nil {
+				return Config{}, err
+			}
 		}
 	} else {
 		_ = godotenv.Load()
